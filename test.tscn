@@ -1,0 +1,154 @@
+[gd_scene load_steps=10 format=3 uid="uid://dvd2xbhjh0c87"]
+
+[ext_resource type="Shader" uid="uid://cftjdjgrgsjv2" path="res://Misc Resources/grid.gdshader" id="1_8uh7m"]
+[ext_resource type="PackedScene" uid="uid://b4wvp85wvucum" path="res://Player/player.tscn" id="1_37kl0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbghi"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_hn12h"]
+sky_material = SubResource("ProceduralSkyMaterial_hbghi")
+
+[sub_resource type="Environment" id="Environment_ihfcg"]
+background_mode = 2
+sky = SubResource("Sky_hn12h")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6uqi0"]
+render_priority = 0
+shader = ExtResource("1_8uh7m")
+shader_parameter/subdivisions = 12.0
+shader_parameter/grid_width = 0.02
+shader_parameter/background_color = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/background_color_two = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/grid_color = Color(0.5, 0.5, 0.5, 1)
+shader_parameter/dashed_scale_x = 0.02
+shader_parameter/dashed_scale_y = 0.02
+shader_parameter/dashed_count_x = 1.0
+shader_parameter/dashed_count_y = 1.0
+shader_parameter/point_width = 0.021
+shader_parameter/point_color = Color(0, 0, 0, 1)
+shader_parameter/point_scale_x = 0.05
+shader_parameter/point_scale_y = 0.05
+shader_parameter/inside_width = 0.01
+shader_parameter/inside_subdivisions = 6.0
+shader_parameter/inside_color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/in_dashed_scale_x = 0.3
+shader_parameter/in_dashed_scale_y = 0.3
+shader_parameter/in_dashed_count_x = 6.0
+shader_parameter/in_dashed_count_y = 6.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8uh7m"]
+render_priority = 0
+shader = ExtResource("1_8uh7m")
+shader_parameter/subdivisions = 32.0
+shader_parameter/grid_width = 0.02
+shader_parameter/background_color = Color(0.64241, 0.6502, 1, 1)
+shader_parameter/background_color_two = Color(1, 1, 1, 1)
+shader_parameter/grid_color = Color(0.5, 0.5, 0.5, 1)
+shader_parameter/dashed_scale_x = 0.02
+shader_parameter/dashed_scale_y = 0.02
+shader_parameter/dashed_count_x = 1.0
+shader_parameter/dashed_count_y = 1.0
+shader_parameter/point_width = 0.021
+shader_parameter/point_color = Color(0, 0, 0, 1)
+shader_parameter/point_scale_x = 0.05
+shader_parameter/point_scale_y = 0.05
+shader_parameter/inside_width = 0.01
+shader_parameter/inside_subdivisions = 6.0
+shader_parameter/inside_color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/in_dashed_scale_x = 0.3
+shader_parameter/in_dashed_scale_y = 0.3
+shader_parameter/in_dashed_count_x = 6.0
+shader_parameter/in_dashed_count_y = 6.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_8uh7m"]
+size = Vector3(1, 40, 40)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6uqi0"]
+points = PackedVector3Array(-0.81746, -20.3135, -20.3095, 1.08712, 20.3175, 20.3095, 1.08712, 20.3175, -20.3095, 1.0873, -20.3135, 20.3095, -0.81746, 20.3135, 20.3095, 1.0873, -20.3135, -20.3095, -0.81746, -20.3135, 20.3095, -0.81746, 20.3135, -20.3095, 1.0873, 18.4084, -20.3095)
+
+[node name="Level1" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ihfcg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+shadow_transmittance_bias = -16.0
+shadow_opacity = 0.5
+shadow_blur = 10.0
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+shadow_transmittance_bias = -16.0
+shadow_opacity = 0.5
+shadow_blur = 10.0
+
+[node name="Floor" type="CSGBox3D" parent="."]
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(200, 1, 200)
+material = SubResource("ShaderMaterial_6uqi0")
+
+[node name="Player" parent="." instance=ExtResource("1_37kl0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.28188, 1.54939, 37.9693)
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="10mGap" type="Node" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="10mGap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 20, 0)
+collision_layer = 5
+collision_mask = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="10mGap/StaticBody3D"]
+material_override = SubResource("ShaderMaterial_8uh7m")
+mesh = SubResource("BoxMesh_8uh7m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="10mGap/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_6uqi0")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="10mGap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 20, 0)
+collision_layer = 5
+collision_mask = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="10mGap/StaticBody3D2"]
+material_override = SubResource("ShaderMaterial_8uh7m")
+mesh = SubResource("BoxMesh_8uh7m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="10mGap/StaticBody3D2"]
+shape = SubResource("ConvexPolygonShape3D_6uqi0")
+
+[node name="15mGap" type="Node" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="15mGap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 20, -49)
+collision_layer = 5
+collision_mask = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="15mGap/StaticBody3D"]
+material_override = SubResource("ShaderMaterial_8uh7m")
+mesh = SubResource("BoxMesh_8uh7m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="15mGap/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_6uqi0")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="15mGap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 20, -49)
+collision_layer = 5
+collision_mask = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="15mGap/StaticBody3D2"]
+material_override = SubResource("ShaderMaterial_8uh7m")
+mesh = SubResource("BoxMesh_8uh7m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="15mGap/StaticBody3D2"]
+shape = SubResource("ConvexPolygonShape3D_6uqi0")

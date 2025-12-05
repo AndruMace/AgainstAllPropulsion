@@ -1,0 +1,215 @@
+[gd_scene load_steps=7 format=3 uid="uid://7nvfapkr3ad2"]
+
+[ext_resource type="Script" uid="uid://cdphcs1lv8l3q" path="res://UI/pause_menu.gd" id="1_ltd3m"]
+[ext_resource type="Script" uid="uid://c30kx14e0ynj5" path="res://UI/audio_control.gd" id="2_jfm1e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ltd3m"]
+bg_color = Color(0.321569, 0, 0, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ltd3m"]
+color = Color(1, 1, 1, 1)
+thickness = 6
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jfm1e"]
+thickness = 6
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_03fe5"]
+thickness = 6
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ltd3m")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.81502, 3.58574e-06, 7.70092e-07, 0.337255)
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/v_separation = 8
+
+[node name="Label" type="Label" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Paused"
+
+[node name="ResumeButton" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Resume"
+
+[node name="SettingsButton" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Quit
+"
+
+[node name="Settings" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -346.5
+offset_top = -231.5
+offset_right = 346.5
+offset_bottom = 231.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ltd3m")
+
+[node name="MouseSensitivityLabel" type="Label" parent="Settings"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -134.5
+offset_top = 36.5
+offset_right = 134.5
+offset_bottom = 81.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Mouse Sensitivity"
+
+[node name="MusicVolumeLabel" type="Label" parent="Settings"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_top = 180.5
+offset_right = 45.0
+offset_bottom = 225.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Music"
+
+[node name="SFXVolumeLabel" type="Label" parent="Settings"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -27.5
+offset_top = 281.5
+offset_right = 27.5
+offset_bottom = 326.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "SFX"
+
+[node name="BackButton" type="Button" parent="Settings"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -94.0
+offset_top = -90.5
+offset_right = 90.0
+offset_bottom = -37.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back"
+
+[node name="MusicAudioControl" type="HSlider" parent="Settings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.5
+offset_top = -27.0
+offset_right = 107.5
+offset_bottom = 49.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/slider = SubResource("StyleBoxLine_ltd3m")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_jfm1e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_03fe5")
+max_value = 1.0
+step = 0.05
+value = 1.0
+script = ExtResource("2_jfm1e")
+audio_bus = "Music"
+
+[node name="MouseSensitivity" type="HSlider" parent="Settings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.5
+offset_top = -153.0
+offset_right = 107.5
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/slider = SubResource("StyleBoxLine_ltd3m")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_jfm1e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_03fe5")
+min_value = 0.001
+max_value = 0.01
+step = 0.001
+value = 0.005
+
+[node name="SFXAudioControl" type="HSlider" parent="Settings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.5
+offset_top = 62.0
+offset_right = 107.5
+offset_bottom = 138.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/slider = SubResource("StyleBoxLine_ltd3m")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_jfm1e")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_03fe5")
+max_value = 1.0
+step = 0.05
+value = 1.0
+script = ExtResource("2_jfm1e")
+audio_bus = "SFX"
+
+[connection signal="pressed" from="GridContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="GridContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="GridContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="Settings/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="Settings/MusicAudioControl" to="Settings/MusicAudioControl" method="_on_value_changed"]
+[connection signal="value_changed" from="Settings/MouseSensitivity" to="." method="_on_mouse_sensitivty_value_changed"]
+[connection signal="value_changed" from="Settings/SFXAudioControl" to="Settings/SFXAudioControl" method="_on_value_changed"]

@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://polwtkkducq"]
+
+[ext_resource type="PackedScene" uid="uid://01t4kr572t80" path="res://ladder_inherited.tscn" id="1_6sfst"]
+[ext_resource type="Script" uid="uid://dmdmuo0nl1njb" path="res://exit.gd" id="1_24kvk"]
+[ext_resource type="PackedScene" uid="uid://bwkjry8wqheat" path="res://UI/level_win_menu.tscn" id="2_mlcv5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6sfst"]
+render_priority = 127
+albedo_color = Color(0.482353, 0.482353, 0.482353, 0)
+metallic = 1.0
+roughness = 0.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6sfst"]
+size = Vector3(4.59375, 3.94189, 5.31787)
+
+[node name="LadderExit" type="Node3D"]
+script = ExtResource("1_24kvk")
+
+[node name="LevelWinMenu" parent="." instance=ExtResource("2_mlcv5")]
+
+[node name="ladder_inherited" parent="." instance=ExtResource("1_6sfst")]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.512071, 21.2411, -0.127823)
+material_override = SubResource("StandardMaterial3D_6sfst")
+use_collision = true
+size = Vector3(1.40601, 45.6345, 0.118896)
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.435931, 1.84906, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25269, 2.15894)
+shape = SubResource("BoxShape3D_6sfst")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

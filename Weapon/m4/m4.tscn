@@ -1,0 +1,52 @@
+[gd_scene load_steps=8 format=3 uid="uid://xfxm0mp6g6he"]
+
+[ext_resource type="PackedScene" uid="uid://ddc7aio6a6rem" path="res://Weapon/hitscan_weapon.tscn" id="1_5lgsg"]
+[ext_resource type="PackedScene" uid="uid://844t6flh3fp5" path="res://Weapon/m4/m4.glb" id="2_w4cvg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w4cvg"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="Curve" id="Curve_w4cvg"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_w4cvg"]
+curve = SubResource("Curve_w4cvg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w4cvg"]
+direction = Vector3(0, 0, -1)
+spread = 0.5
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_w4cvg")
+
+[sub_resource type="BoxMesh" id="BoxMesh_1vg58"]
+size = Vector3(0.01, 0.01, 0.01)
+
+[node name="M4" node_paths=PackedStringArray("weapon_mesh", "muzzle_flash") instance=ExtResource("1_5lgsg")]
+weapon_mesh = NodePath("m4")
+muzzle_flash = NodePath("MuzleFlash")
+
+[node name="m4" parent="." index="1" instance=ExtResource("2_w4cvg")]
+transform = Transform3D(0.0994327, 0, -0.00957314, 0, 0.1, 0, 0.0106368, 0, 0.0894894, 0.0920092, -0.0946924, -0.265869)
+
+[node name="pCube14" parent="m4" index="29"]
+transform = Transform3D(0.00999047, 0, 0.000436543, 0, 0.01, 0, -0.000436543, 0, 0.00999047, 0.285297, 0, -2.23074)
+layers = 2
+
+[node name="MuzleFlash" type="GPUParticles3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.156425, -0.0538697, -0.718503)
+layers = 2
+material_override = SubResource("StandardMaterial3D_w4cvg")
+emitting = false
+lifetime = 0.1
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_w4cvg")
+draw_pass_1 = SubResource("BoxMesh_1vg58")
+
+[editable path="m4"]

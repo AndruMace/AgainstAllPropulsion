@@ -1,0 +1,56 @@
+[gd_scene load_steps=11 format=3 uid="uid://clg1d3d60fhyc"]
+
+[ext_resource type="PackedScene" uid="uid://comodqjevabts" path="res://Weapon/projectile_weapon.tscn" id="1_soy8v"]
+[ext_resource type="PackedScene" uid="uid://r55vnw6irow1" path="res://Weapon/missle_mesh.tscn" id="2_0575g"]
+[ext_resource type="PackedScene" uid="uid://c5x0pp8nr3ypb" path="res://Weapon/sparks.tscn" id="2_xxibu"]
+[ext_resource type="AudioStream" uid="uid://bufmae7lxmy4a" path="res://Misc Resources/Sounds/pocketpistol.wav" id="5_8e56c"]
+[ext_resource type="PackedScene" uid="uid://duqxqxkjksyaf" path="res://Weapon/launcher_2_inherited.tscn" id="5_cax7b"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8e56c"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="Curve" id="Curve_cax7b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_w4cvg"]
+curve = SubResource("Curve_cax7b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_svruu"]
+direction = Vector3(0, 0, -1)
+spread = 0.5
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_w4cvg")
+
+[sub_resource type="BoxMesh" id="BoxMesh_fak60"]
+size = Vector3(0.01, 0.01, 0.01)
+
+[node name="RocketLauncher" node_paths=PackedStringArray("weapon_mesh", "muzzle_flash") instance=ExtResource("1_soy8v")]
+fully_auto = false
+weapon_mesh = NodePath("launcher2inherited")
+muzzle_flash = NodePath("MuzleFlash")
+sparks = ExtResource("2_xxibu")
+projectile = ExtResource("2_0575g")
+
+[node name="MuzleFlash" type="GPUParticles3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.156425, -0.0538697, -0.718503)
+layers = 2
+material_override = SubResource("StandardMaterial3D_8e56c")
+emitting = false
+lifetime = 0.1
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_svruu")
+draw_pass_1 = SubResource("BoxMesh_fak60")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." index="2"]
+stream = ExtResource("5_8e56c")
+volume_db = -10.0
+bus = &"SFX"
+
+[node name="launcher2inherited" parent="." index="3" instance=ExtResource("5_cax7b")]

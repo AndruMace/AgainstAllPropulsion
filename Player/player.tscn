@@ -1,0 +1,207 @@
+[gd_scene load_steps=18 format=3 uid="uid://b4wvp85wvucum"]
+
+[ext_resource type="Script" uid="uid://dgsw05kon0dyl" path="res://Player/Player.gd" id="1_4flbx"]
+[ext_resource type="Script" uid="uid://b3u4fuxgpaax4" path="res://Player/crosshair.gd" id="2_4ntmi"]
+[ext_resource type="Script" uid="uid://cgbn0kwxglggm" path="res://Weapon/weapon_handler.gd" id="2_vtle1"]
+[ext_resource type="Texture2D" uid="uid://dim3q2boqyq7p" path="res://Misc Resources/gpt_damage.png" id="4_gwnis"]
+[ext_resource type="PackedScene" uid="uid://clg1d3d60fhyc" path="res://Weapon/rocket_launcher.tscn" id="5_00tjw"]
+[ext_resource type="PackedScene" uid="uid://mysgatchwv0c" path="res://Player/game_over_menu.tscn" id="5_k53q1"]
+[ext_resource type="Script" uid="uid://do1flgp5q5y02" path="res://Weapon/ammo_handler.gd" id="5_od3ui"]
+[ext_resource type="PackedScene" uid="uid://dlg6q71qb75mq" path="res://Weapon/missle.tscn" id="6_x3vf3"]
+[ext_resource type="AudioStream" uid="uid://8jbbbikewydo" path="res://Misc Resources/Sounds/output.mp3" id="9_00tjw"]
+[ext_resource type="PackedScene" uid="uid://7nvfapkr3ad2" path="res://UI/pause_menu.tscn" id="9_x3vf3"]
+[ext_resource type="Script" uid="uid://dns7t0qp3mrba" path="res://Player/timer.gd" id="12_5htga"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_onrkg"]
+
+[sub_resource type="Animation" id="Animation_k53q1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_gwnis"]
+resource_name = "take_damage"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.00472234, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.5, 1.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fhl08"]
+_data = {
+&"RESET": SubResource("Animation_k53q1"),
+&"take_damage": SubResource("Animation_gwnis")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_od3ui"]
+font_size = 48
+
+[node name="Player" type="CharacterBody3D" groups=["players"]]
+script = ExtResource("1_4flbx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_onrkg")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.542457, -0.269314)
+cull_mask = 1048573
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Camera3D"]
+remote_path = NodePath("../../SubViewportContainer/SubViewport/WeaponCam")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="WeaponCam" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.542457, -0.269314)
+cull_mask = 2
+fov = 60.0
+
+[node name="WeaponHandler" type="Node3D" parent="SubViewportContainer/SubViewport/WeaponCam" node_paths=PackedStringArray("weapon_3")]
+script = ExtResource("2_vtle1")
+weapon_3 = NodePath("RocketLauncher")
+
+[node name="RocketLauncher" parent="SubViewportContainer/SubViewport/WeaponCam/WeaponHandler" node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_00tjw")]
+transform = Transform3D(0.973593, 0.210601, -0.0881214, -0.207418, 0.977265, 0.0439482, 0.0953734, -0.0245099, 0.99514, 0.305706, -0.174313, -0.345994)
+shots_per_second = 7.0
+ammo_handler = NodePath("../../AmmoHandler")
+projectile = ExtResource("6_x3vf3")
+
+[node name="AmmoHandler" type="Node" parent="SubViewportContainer/SubViewport/WeaponCam" node_paths=PackedStringArray("ammo_label")]
+unique_name_in_owner = true
+script = ExtResource("5_od3ui")
+ammo_label = NodePath("../../../../MarginContainer/Label")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Crosshair" type="Control" parent="CenterContainer"]
+layout_mode = 2
+script = ExtResource("2_4ntmi")
+
+[node name="DamageTexture" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(576, 324)
+mouse_filter = 2
+texture = ExtResource("4_gwnis")
+expand_mode = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DamageTexture"]
+libraries = {
+&"": SubResource("AnimationLibrary_fhl08")
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "69"
+label_settings = SubResource("LabelSettings_od3ui")
+
+[node name="TimerLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 32
+text = "00:00"
+
+[node name="GameOverMenu" parent="." instance=ExtResource("5_k53q1")]
+process_mode = 3
+visible = false
+
+[node name="PauseMenu" parent="." instance=ExtResource("9_x3vf3")]
+visible = false
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("9_00tjw")
+volume_db = -10.0
+autoplay = true
+bus = &"Music"
+parameters/looping = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.01
+script = ExtResource("12_5htga")
+
+[connection signal="timeout" from="Timer" to="Timer" method="_on_timeout"]

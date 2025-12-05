@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bufmae7lxmy4a"
+path="res://.godot/imported/pocketpistol.wav-120b53500320d6c30bc2412b72dfe259.sample"
+
+[deps]
+
+source_file="res://Misc Resources/Sounds/pocketpistol.wav"
+dest_files=["res://.godot/imported/pocketpistol.wav-120b53500320d6c30bc2412b72dfe259.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

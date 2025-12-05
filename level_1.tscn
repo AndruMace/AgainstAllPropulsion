@@ -1,0 +1,370 @@
+[gd_scene load_steps=22 format=3 uid="uid://bonsmktpxhvl"]
+
+[ext_resource type="Shader" uid="uid://cftjdjgrgsjv2" path="res://Misc Resources/grid.gdshader" id="1_3hls8"]
+[ext_resource type="PackedScene" uid="uid://b4wvp85wvucum" path="res://Player/player.tscn" id="2_hbghi"]
+[ext_resource type="Texture2D" uid="uid://cu6lhi4yoim5t" path="res://mats/concrete textures/concrete_wall_006_diff_4k.jpg" id="2_ihfcg"]
+[ext_resource type="Texture2D" uid="uid://b8cdmdaf1h0m2" path="res://mats/concrete textures/concrete_wall_006_disp_4k.png" id="3_rka8t"]
+[ext_resource type="Script" uid="uid://cpgu5nx2afoil" path="res://spinner.gd" id="5_rka8t"]
+[ext_resource type="PackedScene" uid="uid://f2le36ptc4ov" path="res://lg_pickup.tscn" id="6_5hph3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbghi"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_hn12h"]
+sky_material = SubResource("ProceduralSkyMaterial_hbghi")
+
+[sub_resource type="Environment" id="Environment_ihfcg"]
+background_mode = 2
+sky = SubResource("Sky_hn12h")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_27bay"]
+albedo_color = Color(0.584314, 0.337255, 0.313726, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5hph3"]
+albedo_texture = ExtResource("2_ihfcg")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_rka8t")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7kpp"]
+albedo_texture = ExtResource("2_ihfcg")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_rka8t")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hn12h"]
+render_priority = 0
+shader = ExtResource("1_3hls8")
+shader_parameter/subdivisions = 64.0
+shader_parameter/grid_width = 0.02
+shader_parameter/background_color = Color(0, 0, 0, 0)
+shader_parameter/background_color_two = Color(0.306923, 0.306923, 0.306923, 1)
+shader_parameter/grid_color = Color(0, 0, 0, 1)
+shader_parameter/dashed_scale_x = 0.02
+shader_parameter/dashed_scale_y = 0.02
+shader_parameter/dashed_count_x = 1.0
+shader_parameter/dashed_count_y = 1.0
+shader_parameter/point_width = 0.021
+shader_parameter/point_color = Color(0, 0, 0, 1)
+shader_parameter/point_scale_x = 0.05
+shader_parameter/point_scale_y = 0.05
+shader_parameter/inside_width = 0.01
+shader_parameter/inside_subdivisions = 6.0
+shader_parameter/inside_color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/in_dashed_scale_x = 0.3
+shader_parameter/in_dashed_scale_y = 0.3
+shader_parameter/in_dashed_count_x = 6.0
+shader_parameter/in_dashed_count_y = 6.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjebc"]
+albedo_texture = ExtResource("2_ihfcg")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_rka8t")
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_rka8t"]
+rough = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rka8t"]
+top_radius = 8.0
+bottom_radius = 8.0
+height = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyffv"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+roughness = 0.0
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_5hph3"]
+points = PackedVector3Array(-8, -25, 0, -7.96241, -25, -0.784651, -7.96241, -25, 0.783086, -8, 25, 0, -7.84652, -25, -1.56147, -7.96241, 25, -0.784651, -7.84652, -25, 1.55991, -7.96241, 25, 0.783086, -7.65701, -25, -2.32263, -7.84652, 25, -1.56147, -7.65701, -25, 2.32106, -7.84652, 25, 1.55991, -7.39233, -25, -3.06186, -7.65701, 25, -2.32263, -7.39233, -25, 3.0603, -7.65701, 25, 2.32106, -7.0556, -25, -3.77134, -7.39233, 25, -3.06186, -7.0556, -25, 3.76977, -7.39233, 25, 3.0603, -6.65309, -25, -4.44479, -7.0556, 25, -3.77134, -6.65309, -25, 4.44323, -7.0556, 25, 3.76977, -6.18481, -25, -5.07596, -6.65309, 25, -4.44479, -6.18481, -25, 5.07439, -6.65309, 25, 4.44323, -5.65701, -25, -5.65701, -6.18481, 25, -5.07596, -5.65701, -25, 5.65544, -6.18481, 25, 5.07439, -5.07596, -25, -6.18481, -5.65701, 25, -5.65701, -5.07596, -25, 6.18324, -5.65701, 25, 5.65544, -4.44479, -25, -6.65309, -5.07596, 25, -6.18481, -4.44479, -25, 6.65153, -5.07596, 25, 6.18324, -3.77134, -25, -7.0556, -4.44479, 25, -6.65309, -3.77134, -25, 7.05403, -4.44479, 25, 6.65153, -3.06186, -25, -7.39233, -3.77134, 25, -7.0556, -3.06186, -25, 7.39076, -3.77134, 25, 7.05403, -2.32263, -25, -7.65701, -3.06186, 25, -7.39233, -2.32263, -25, 7.65544, -3.06186, 25, 7.39076, -1.56147, -25, -7.84652, -2.32263, 25, -7.65701, -1.56147, -25, 7.84495, -2.32263, 25, 7.65544, -0.784651, -25, -7.96241, -1.56147, 25, -7.84652, -0.784651, -25, 7.96085, -1.56147, 25, 7.84495, 0, -25, -8, -0.784651, 25, -7.96241, 0, -25, 8, -0.784651, 25, 7.96085, 0.783086, -25, -7.96241, 0, 25, -8, 0.783086, -25, 7.96085, 0, 25, 8, 1.55991, -25, -7.84652, 0.783086, 25, -7.96241, 1.55991, -25, 7.84495, 0.783086, 25, 7.96085, 2.32106, -25, -7.65701, 1.55991, 25, -7.84652, 2.32106, -25, 7.65544, 1.55991, 25, 7.84495, 3.0603, -25, -7.39233, 2.32106, 25, -7.65701, 3.0603, -25, 7.39076, 2.32106, 25, 7.65544, 3.76977, -25, -7.0556, 3.0603, 25, -7.39233, 3.76977, -25, 7.05403, 3.0603, 25, 7.39076, 4.44323, -25, -6.65309, 3.76977, 25, -7.0556, 4.44323, -25, 6.65153, 3.76977, 25, 7.05403, 5.07439, -25, -6.18481, 4.44323, 25, -6.65309, 5.07439, -25, 6.18324, 4.44323, 25, 6.65153, 5.65544, -25, -5.65701, 5.07439, 25, -6.18481, 5.65544, -25, 5.65544, 5.07439, 25, 6.18324, 6.18324, -25, -5.07596, 5.65544, 25, -5.65701, 6.18324, -25, 5.07439, 5.65544, 25, 5.65544, 6.65153, -25, -4.44479, 6.18324, 25, -5.07596, 6.65153, -25, 4.44323, 6.18324, 25, 5.07439, 7.05403, -25, -3.77134, 6.65153, 25, -4.44479, 7.05403, -25, 3.76977, 6.65153, 25, 4.44323, 7.39076, -25, -3.06186, 7.05403, 25, -3.77134, 7.39076, -25, 3.0603, 7.05403, 25, 3.76977, 7.65544, -25, -2.32263, 7.39076, 25, -3.06186, 7.65544, -25, 2.32106, 7.39076, 25, 3.0603, 7.84495, -25, -1.56147, 7.65544, 25, -2.32263, 7.84495, -25, 1.55991, 7.65544, 25, 2.32106, 7.96085, -25, -0.784651, 7.84495, 25, -1.56147, 7.96085, -25, 0.783086, 7.84495, 25, 1.55991, 8, -25, 0, 7.96085, 25, -0.784651, 7.96085, 25, 0.783086, 8, 25, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1pe0h"]
+albedo_color = Color(0.103744, 0.103744, 0.103744, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5rr72"]
+albedo_texture = ExtResource("2_ihfcg")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_rka8t")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rka8t"]
+metallic = 1.0
+roughness = 0.25
+
+[node name="Level1" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ihfcg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+shadow_transmittance_bias = -16.0
+shadow_opacity = 0.5
+shadow_blur = 10.0
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.33105)
+material_override = SubResource("StandardMaterial3D_27bay")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(120, 1, 154.662)
+
+[node name="Floor2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 75, 75)
+material_override = SubResource("StandardMaterial3D_27bay")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(120, 1, 150)
+
+[node name="Floor3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 75, -80)
+material_override = SubResource("StandardMaterial3D_27bay")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(120, 1, 150)
+
+[node name="Player" parent="." instance=ExtResource("2_hbghi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.28188, 1.54939, 37.9693)
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Platform" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.4998, 3.58695, 35.6717)
+material_override = SubResource("StandardMaterial3D_5hph3")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(29.9197, 6.27271, 23.2861)
+
+[node name="Platform2" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.9218, 9.17169, -4.92895)
+material_override = SubResource("StandardMaterial3D_j7kpp")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(31.2693, 18.218, 13.8629)
+
+[node name="Platform7" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.978491, 0, 0.20629, 0, 1, 0, -0.20629, 0, 0.978491, 21.5987, 32.5444, 0.411659)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(25.3852, 1, 11.387)
+
+[node name="Platform8" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.776497, 0, -0.63012, 0, 1, 0, 0.63012, 0, 0.776497, 27.5405, 41.5389, -6.13625)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(16.5848, 1, 11.387)
+
+[node name="Platform9" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.980346, 0, -0.197281, 0, 1, 0, 0.197281, 0, 0.980346, 28.0988, 49.0178, -0.990149)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(16.5848, 1, 5.72719)
+
+[node name="Platform10" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(-0.0172082, 0, -0.999852, 0, 1, 0, 0.999852, 0, -0.0172082, 37.2115, 44.1002, -7.2122)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.3476, 1, 4.6363)
+
+[node name="Platform11" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(-0.600518, 0, -0.799611, 0, 1, 0, 0.799611, 0, -0.600518, 38.1289, 52.2961, -5.65509)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.3476, 1, 10.4806)
+
+[node name="Platform12" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(-0.881262, 0, 0.472628, 0, 1, 0, -0.472628, 0, -0.881262, 38.1289, 56.8767, 1.50562)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.3476, 1, 10.4806)
+
+[node name="Platform13" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(-0.0311666, 0, 0.999514, 0, 1, 0, -0.999514, 0, -0.0311666, 33.9829, 45.5698, 4.85997)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.3476, 1, 8.26642)
+
+[node name="Platform19" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.815552, 0, 0.578683, 0, 1, 0, -0.578683, 0, 0.815552, 24.293, 76.8653, 3.44916)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.3476, 1, 2.93359)
+
+[node name="Platform14" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.0700524, 0, 0.997543, 0, 1, 0, -0.997543, 0, 0.0700524, 29.8522, 60.5825, 9.13514)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(8.55686, 0.271546, 2.58675)
+
+[node name="Platform16" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.960508, 0.207531, 0.185349, -0.0798273, 0.843645, -0.530934, -0.266554, 0.495171, 0.826895, 23.9052, 64.6839, 0.779719)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(17.081, 1.96338, 8.72566)
+
+[node name="Platform17" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(0.0813912, -0.345035, 0.935055, 0.148453, 0.931899, 0.330949, -0.985565, 0.111875, 0.12707, 33.3874, 69.9169, 8.97372)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(16.6694, 0.615967, 5.28957)
+
+[node name="Platform5" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.5557, 12.857, -33.6125)
+material_override = SubResource("StandardMaterial3D_bjebc")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(29.9197, 25.0316, 25.7513)
+
+[node name="Platform21" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.4609, 85.1863, -25.16)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(16.8632, 1, 13.8629)
+
+[node name="Platform22" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8732, 89.6205, -39.2026)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.4278, 1, 12.319)
+
+[node name="Platform23" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.8208, 94.7182, -23.7924)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(14.0701, 1, 11.1277)
+
+[node name="Platform24" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0799, 100.768, 2.00595)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(16.8632, 1, 6.21499)
+
+[node name="Platform25" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.969, 104.955, 27.1396)
+material_override = SubResource("ShaderMaterial_hn12h")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(5.68746, 1, 5.68991)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 32.4968, 38.7887, -1.1897)
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+radius = 8.0
+height = 79.095
+sides = 3
+material = SubResource("StandardMaterial3D_bjebc")
+
+[node name="Spinner" type="StaticBody3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 5.61256, 31.3719, -40.0216)
+collision_layer = 5
+collision_mask = 5
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+physics_material_override = SubResource("PhysicsMaterial_rka8t")
+constant_angular_velocity = Vector3(0, 0, 0.523599)
+script = ExtResource("5_rka8t")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platforms/Spinner"]
+mesh = SubResource("CylinderMesh_rka8t")
+surface_material_override/0 = SubResource("StandardMaterial3D_gyffv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platforms/Spinner"]
+shape = SubResource("ConvexPolygonShape3D_5hph3")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 32.4968, 80.2894, -1.1897)
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+radius = 5.0
+height = 5.16553
+sides = 3
+material = SubResource("StandardMaterial3D_1pe0h")
+
+[node name="Platform3" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.6744, 6.95716, 12.9357)
+material_override = SubResource("StandardMaterial3D_5rr72")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+size = Vector3(28.1572, 13.3171, 13.8629)
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 0.159606, 0.987181, 0, -0.987181, 0.159606, -30.2569, 25.8617, -54.7921)
+material_override = SubResource("StandardMaterial3D_rka8t")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+height = 17.7168
+
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(0.923592, 0.378462, -0.061189, 0, 0.159606, 0.987181, 0.383377, -0.911752, 0.14741, -29.268, 27.4762, -66.1632)
+material_override = SubResource("StandardMaterial3D_rka8t")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+height = 6.09375
+
+[node name="CSGCylinder3D6" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(0.597737, 0.791415, -0.127955, 0, 0.159606, 0.987181, 0.801692, -0.590075, 0.0954021, -23.8978, 28.5978, -71.8062)
+material_override = SubResource("StandardMaterial3D_rka8t")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+height = 11.6929
+
+[node name="CSGCylinder3D7" type="CSGCylinder3D" parent="Platforms"]
+transform = Transform3D(-0.00870274, 0.895742, -0.444488, -0.00269512, 0.444482, 0.895784, 0.999958, 0.00899365, -0.00145408, -14.5486, 31.9349, -74.6016)
+material_override = SubResource("StandardMaterial3D_rka8t")
+use_collision = true
+collision_layer = 5
+collision_mask = 5
+height = 11.6929
+
+[node name="LG_Pickup" parent="." instance=ExtResource("6_5hph3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0222149, 39.1953, -21.3685)
+
+[node name="LG_Pickup2" parent="." instance=ExtResource("6_5hph3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.9943, 89.1238, -7.69797)

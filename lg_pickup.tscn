@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://f2le36ptc4ov"]
+
+[ext_resource type="PackedScene" uid="uid://bm51wcf8ojyds" path="res://pickup.tscn" id="1_86ts2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_86ts2"]
+albedo_color = Color(0, 0, 1, 0.368627)
+
+[node name="LG_Pickup" instance=ExtResource("1_86ts2")]
+ammo_qty = 10
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_86ts2")

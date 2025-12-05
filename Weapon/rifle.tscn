@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://cckyvey5cco2g"]
+
+[ext_resource type="PackedScene" uid="uid://ddc7aio6a6rem" path="res://Weapon/hitscan_weapon.tscn" id="1_jh46s"]
+[ext_resource type="PackedScene" uid="uid://c2hl7jtbeiu82" path="res://Weapon/Sniper_1A.glb" id="2_vbw6j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vbw6j"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="Curve" id="Curve_6bfp4"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1vg58"]
+curve = SubResource("Curve_6bfp4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6dtx8"]
+direction = Vector3(0, 0, -1)
+spread = 0.5
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_1vg58")
+
+[sub_resource type="BoxMesh" id="BoxMesh_ync88"]
+size = Vector3(0.01, 0.01, 0.01)
+
+[node name="Rifle" node_paths=PackedStringArray("weapon_mesh", "muzzle_flash") instance=ExtResource("1_jh46s")]
+fully_auto = false
+recoil_amount = 0.3
+shots_per_second = 2.0
+weapon_mesh = NodePath("Sniper_1A")
+damage = 70.0
+muzzle_flash = NodePath("MuzleFlash")
+
+[node name="Sniper_1A" parent="." index="2" instance=ExtResource("2_vbw6j")]
+transform = Transform3D(0.00204364, 0, -0.0999791, 0, 0.1, 0, 0.0999791, 0, 0.00204364, 0.159947, -0.222472, -0.376598)
+
+[node name="Body" parent="Sniper_1A" index="0"]
+layers = 2
+
+[node name="Magazine" parent="Sniper_1A/Body" index="0"]
+layers = 2
+
+[node name="Scope" parent="Sniper_1A/Body" index="1"]
+layers = 2
+
+[node name="Lens" parent="Sniper_1A/Body/Scope" index="0"]
+layers = 2
+
+[node name="Stick" parent="Sniper_1A/Body" index="2"]
+layers = 2
+
+[node name="Upper_Body" parent="Sniper_1A/Body" index="3"]
+layers = 2
+
+[node name="MuzleFlash" type="GPUParticles3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.156425, -0.0538697, -0.718503)
+layers = 2
+material_override = SubResource("StandardMaterial3D_vbw6j")
+emitting = false
+lifetime = 0.1
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_6dtx8")
+draw_pass_1 = SubResource("BoxMesh_ync88")
+
+[editable path="Sniper_1A"]

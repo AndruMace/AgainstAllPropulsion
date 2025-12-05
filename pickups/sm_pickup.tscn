@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdekvu2n3bxsy"]
+
+[ext_resource type="PackedScene" uid="uid://bm51wcf8ojyds" path="res://pickups/pickup.tscn" id="1_503lv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_503lv"]
+albedo_color = Color(0, 0.396078, 0, 0.529412)
+
+[node name="SM_Pickup" instance=ExtResource("1_503lv")]
+pickup_ammo_type = 1
+ammo_qty = 40
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_503lv")
