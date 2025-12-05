@@ -1,9 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://bonsmktpxhvl"]
+[gd_scene load_steps=20 format=3 uid="uid://bonsmktpxhvl"]
 
 [ext_resource type="Shader" uid="uid://cftjdjgrgsjv2" path="res://Misc Resources/grid.gdshader" id="1_3hls8"]
 [ext_resource type="PackedScene" uid="uid://b4wvp85wvucum" path="res://Player/player.tscn" id="2_hbghi"]
-[ext_resource type="Texture2D" uid="uid://cu6lhi4yoim5t" path="res://mats/concrete textures/concrete_wall_006_diff_4k.jpg" id="2_ihfcg"]
-[ext_resource type="Texture2D" uid="uid://b8cdmdaf1h0m2" path="res://mats/concrete textures/concrete_wall_006_disp_4k.png" id="3_rka8t"]
 [ext_resource type="Script" uid="uid://cpgu5nx2afoil" path="res://spinner.gd" id="5_rka8t"]
 [ext_resource type="PackedScene" uid="uid://f2le36ptc4ov" path="res://lg_pickup.tscn" id="6_5hph3"]
 
@@ -24,14 +22,10 @@ glow_enabled = true
 albedo_color = Color(0.584314, 0.337255, 0.313726, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5hph3"]
-albedo_texture = ExtResource("2_ihfcg")
 heightmap_enabled = true
-heightmap_texture = ExtResource("3_rka8t")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7kpp"]
-albedo_texture = ExtResource("2_ihfcg")
 heightmap_enabled = true
-heightmap_texture = ExtResource("3_rka8t")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hn12h"]
 render_priority = 0
@@ -58,9 +52,7 @@ shader_parameter/in_dashed_count_x = 6.0
 shader_parameter/in_dashed_count_y = 6.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjebc"]
-albedo_texture = ExtResource("2_ihfcg")
 heightmap_enabled = true
-heightmap_texture = ExtResource("3_rka8t")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_rka8t"]
 rough = true
@@ -82,9 +74,7 @@ points = PackedVector3Array(-8, -25, 0, -7.96241, -25, -0.784651, -7.96241, -25,
 albedo_color = Color(0.103744, 0.103744, 0.103744, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5rr72"]
-albedo_texture = ExtResource("2_ihfcg")
 heightmap_enabled = true
-heightmap_texture = ExtResource("3_rka8t")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rka8t"]
 metallic = 1.0

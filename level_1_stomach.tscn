@@ -1,5 +1,6 @@
-[gd_scene load_steps=37 format=3 uid="uid://d3wpsrqfi1gka"]
+[gd_scene load_steps=38 format=3 uid="uid://d3wpsrqfi1gka"]
 
+[ext_resource type="Script" uid="uid://b2ubqluriijkx" path="res://level1.gd" id="1_a7g63"]
 [ext_resource type="PackedScene" uid="uid://b4wvp85wvucum" path="res://Player/player.tscn" id="1_bdnsr"]
 [ext_resource type="Texture2D" uid="uid://gpe3oa6e3kx6" path="res://mats/stomach/bark_bluegum_diff_1k.png" id="1_roxp3"]
 [ext_resource type="Texture2D" uid="uid://cbwjd50614pw4" path="res://mats/stomach/bark_bluegum_ao_1k.png" id="2_wevgq"]
@@ -44,10 +45,8 @@ heightmap_texture = ExtResource("3_a7g63")
 albedo_color = Color(0.584314, 0.337255, 0.313726, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wevgq"]
-load_path = "res://.godot/imported/concrete_wall_006_diff_4k.jpg-1678d7571bdf408c6331e014fb601cb2.s3tc.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a7g63"]
-load_path = "res://.godot/imported/concrete_wall_006_disp_4k.png-0cb4c87457032c04efb1e0d826d03322.s3tc.ctex"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5hph3"]
 specular_mode = 1
@@ -100,8 +99,8 @@ colors = PackedColorArray(0.403922, 0, 0, 1, 1, 1, 1, 1)
 frequency = 0.0411
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bi31p"]
-noise = SubResource("FastNoiseLite_bi31p")
 color_ramp = SubResource("Gradient_bi31p")
+noise = SubResource("FastNoiseLite_bi31p")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_haj1a"]
 albedo_color = Color(0.403903, 8.42288e-07, 9.62615e-08, 1)
@@ -138,6 +137,7 @@ size = Vector3(4, 15, 1)
 size = Vector3(4, 15, 1)
 
 [node name="Level1" type="Node3D"]
+script = ExtResource("1_a7g63")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ihfcg")
