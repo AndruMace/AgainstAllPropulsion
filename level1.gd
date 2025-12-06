@@ -36,7 +36,7 @@ func _ready():
 			_game_instance = arg.split("=")[1]
 			break
 
-  # Initial player setup
+	# Initial player setup
 	_initial_player = get_node_or_null("Player")
 	if _initial_player:
 		_default_spawn_position = _initial_player.position
@@ -59,14 +59,6 @@ func connected():
 	_update_client_id_display()
 	# Search for the lobby
 	GDSync.get_public_lobby(LOBBY_NAME)
-
-
-func connection_failed(error: int):
-	match (error):
-		ENUMS.CONNECTION_FAILED.INVALID_PUBLIC_KEY:
-			push_error("The public or private key you entered were invalid.")
-		ENUMS.CONNECTION_FAILED.TIMEOUT:
-			push_error("Unable to connect, please check your internet connection.")
 
 
 func _on_lobby_received(lobby: Dictionary):
@@ -278,3 +270,11 @@ func _update_client_id_display():
 		if players.has(client_id) and is_instance_valid(players[client_id]):
 			is_local_text = str(players[client_id].is_local_player)
 		_is_local_label.text = "Is Local: " + is_local_text
+
+
+func connection_failed(error: int):
+	match (error):
+		ENUMS.CONNECTION_FAILED.INVALID_PUBLIC_KEY:
+			push_error("The public or private key you entered were invalid.")
+		ENUMS.CONNECTION_FAILED.TIMEOUT:
+			push_error("Unable to connect, please check your internet connection.")
