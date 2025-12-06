@@ -3,23 +3,41 @@ extends Node3D
 const LOBBY_NAME = "Main Lobby"
 const LOBBY_PASSWORD = ""
 
-# Player management
-var players: Dictionary = { } # client_id -> Player instance
-var local_players: Dictionary = { } # client_id -> is_local (bool)
-var player_scene = preload("res://Player/player.tscn")
-var _default_spawn_position: Vector3 = Vector3.ZERO
 
-var _initial_player: Player = null
+func _short(client_id: int) -> String:
+	return str(client_id % 100000)
+
+# Player management
+var players: Dictionary = { } # _client_id -> Player instance
+var local_players: Dictionary = { } # _client_id -> is_local (bool)
+var player_scene = preload("res://Player/player.tscn")
+var _default_spawn_position: Vector3 = Vector3(5.28188, 1.54939, 37.9693)
+
+var _local_player: Player = null
 var _game_instance: String = ""
 var _client_id_label: Label = null
 var _instance_id_label: Label = null
 var _is_local_label: Label = null
 
+var _client_id: int = -1 # Host-
+
 
 func _ready():
+	# Arg parsing
+	for arg in OS.get_cmdline_args():
+		if arg.begins_with("--instance="):
+			_game_instance = arg.split("=")[1]
+			break
+
+	# Spawn local player immediately so gameplay isn't blocked by network
+	_spawn_local_player()
+
+	# Create client ID display
+	_setup_client_id_display()
+
 	# GDSync signals
-	GDSync.connected.connect(connected)
-	GDSync.connection_failed.connect(connection_failed)
+	GDSync.connected.connect(on_connected)
+	GDSync.connection_failed.connect(on_connection_failed)
 	# Lobby signals
 	GDSync.lobby_received.connect(_on_lobby_received)
 	GDSync.lobby_created.connect(_on_lobby_created)
@@ -30,74 +48,52 @@ func _ready():
 	GDSync.client_joined.connect(_on_client_joined)
 	GDSync.client_left.connect(_on_client_left)
 
-	# Arg parsing
-	for arg in OS.get_cmdline_args():
-		if arg.begins_with("--instance="):
-			_game_instance = arg.split("=")[1]
-			break
-
-	# Initial player setup
-	_initial_player = get_node_or_null("Player")
-	if _initial_player:
-		_default_spawn_position = _initial_player.position
-	else:
-		_default_spawn_position = Vector3.ZERO
-
-	# Create client ID display
-	_setup_client_id_display()
-
 	# Use local multiplayer for testing, or regular multiplayer for production
 	if OS.is_debug_build():
-		GDSync.start_local_multiplayer() # For local testing
+		GDSync.start_local_multiplayer()
 	else:
-		GDSync.start_multiplayer() # For production
+		GDSync.start_multiplayer()
 
 
-func connected():
-	var client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", client_id, "] You are now connected!")
+func _spawn_local_player():
+	_local_player = player_scene.instantiate()
+	add_child(_local_player)
+	_local_player.position = _default_spawn_position
+
+
+func on_connected():
+	_client_id = GDSync.get_client_id() # window client id
+	print("[", _short(_client_id), "] Connected to GDSync.")
+
+	_local_player.name = "Player_" + str(_client_id)
+	_local_player.set_client_id(_client_id)
+	players[_client_id] = _local_player
+	local_players[_client_id] = true
+	GDSync.set_gdsync_owner(_local_player, _client_id)
+	_local_player.position_synchronizer._update_sync_mode()
+
 	_update_client_id_display()
-	# Search for the lobby
+
 	GDSync.get_public_lobby(LOBBY_NAME)
 
 
 func _on_lobby_received(lobby: Dictionary):
-	var client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-
-	# If in debug/local mode, and this is instance 2, always join the lobby,
-	# even if it is not found
+	# If in debug/local mode, and this is instance 2, always join the lobby
 	if OS.is_debug_build() and _game_instance == "2":
-		print("[Client ID: ", client_id, "] [DEBUG] Instance 2 always joins (local debug mode). Joining lobby: " + LOBBY_NAME)
+		print("[", _short(_client_id), "] Joining lobby: " + LOBBY_NAME)
 		GDSync.lobby_join(LOBBY_NAME, LOBBY_PASSWORD)
 		return
 
 	if lobby.is_empty():
-		print("[Client ID: ", client_id, "] Lobby not found. Creating lobby: " + LOBBY_NAME)
-		# Create the lobby
-		GDSync.lobby_create(
-			LOBBY_NAME,
-			LOBBY_PASSWORD,
-			true, # public
-			0, # player_limit (0 = auto)
-			{ }, # tags
-		)
+		print("[", _short(_client_id), "] Lobby not found. Creating lobby: " + LOBBY_NAME)
+		GDSync.lobby_create(LOBBY_NAME, LOBBY_PASSWORD, true, 4, { })
 	else:
-		print("[Client ID: ", client_id, "] Lobby found. Joining lobby: " + LOBBY_NAME)
-		# Join the existing lobby
+		print("[", _short(_client_id), "] Lobby found. Joining lobby: " + LOBBY_NAME)
 		GDSync.lobby_join(LOBBY_NAME, LOBBY_PASSWORD)
 
 
 func _on_lobby_created(lobby_name: String):
-	var client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", client_id, "] Successfully created lobby: " + lobby_name)
-	# Now join the newly created lobby
-
-	# If we have an initial player from the scene, use it and set its client_id
-	if _initial_player and is_instance_valid(_initial_player):
-		players[client_id] = _initial_player
-		_initial_player.set_client_id(client_id)
-		local_players[client_id] = _initial_player.is_local_player
-
+	print("[", _short(_client_id), "] Successfully created lobby: " + lobby_name)
 	GDSync.lobby_join(LOBBY_NAME, LOBBY_PASSWORD)
 
 
@@ -122,18 +118,17 @@ func _on_lobby_creation_failed(lobby_name: String, error: int):
 
 
 func _on_lobby_joined(lobby_name: String):
-	var cur_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", cur_client_id, "] Successfully joined lobby: " + lobby_name)
-	# Spawn players for all existing clients (including ourselves)
-	# Handles joining a lobby that already has players
-	var all_clients = GDSync.lobby_get_all_clients()
-	var my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	for client_id in all_clients:
+	print("[", _short(_client_id), "] Successfully joined lobby: " + lobby_name)
+
+	# Spawn remote players for all existing clients (our local player is already spawned)
+	for client_id in GDSync.lobby_get_all_clients():
+		if client_id == _client_id:
+			continue # Skip ourselves, local player already exists
 		if players.has(client_id):
-			print("[Client ID: ", my_client_id, "] Player for client ", client_id, " already exists")
+			print("[", _short(_client_id), "] Player for client ", _short(client_id), " already exists")
 		else:
-			print("[Client ID: ", my_client_id, "] Spawning player for client ", client_id)
-			_spawn_player_for_client(client_id)
+			print("[", _short(_client_id), "] Spawning remote player for client ", _short(client_id))
+			_spawn_remote_player(client_id)
 
 
 func _on_lobby_join_failed(lobby_name: String, error: int):
@@ -151,16 +146,13 @@ func _on_lobby_join_failed(lobby_name: String, error: int):
 
 
 func _on_client_joined(client_id: int):
-	var my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", my_client_id, "] Client joined: ", client_id)
-	# Spawn a player for the newly joined client
-	_spawn_player_for_client(client_id)
+	print("[", _short(_client_id), "] Client joined: ", _short(client_id))
+	if _client_id != client_id and not players.has(client_id):
+		_spawn_remote_player(client_id)
 
 
 func _on_client_left(client_id: int):
-	var my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", my_client_id, "] Client left: ", client_id)
-	# Remove the player instance when a client leaves
+	print("[", _short(_client_id), "] Client left: ", _short(client_id))
 	if players.has(client_id):
 		var player_instance = players[client_id]
 		if is_instance_valid(player_instance):
@@ -169,34 +161,20 @@ func _on_client_left(client_id: int):
 		local_players.erase(client_id)
 
 
-func _spawn_player_for_client(client_id: int):
-	# Don't spawn if player already exists
-	var my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
+func _spawn_remote_player(client_id: int):
 	if players.has(client_id):
-		print("[Client ID: ", my_client_id, "] Player for client ", client_id, " already exists")
 		return
 
-	# Instantiate the player scene
 	var player_instance = player_scene.instantiate()
+	player_instance.name = "Player_" + str(client_id)
 	add_child(player_instance)
 	players[client_id] = player_instance
-
 	player_instance.position = _default_spawn_position
 	player_instance.set_client_id(client_id)
-	local_players[client_id] = player_instance.is_local_player
-
-	my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	var pos_str = str(_default_spawn_position)
-	print(
-		"[Client ID: ",
-		my_client_id,
-		"] Spawned player for client ",
-		client_id,
-		" at position ",
-		pos_str,
-	)
-
-	_update_client_id_display()
+	local_players[client_id] = false
+	GDSync.set_gdsync_owner(player_instance, client_id)
+	player_instance.position_synchronizer._update_sync_mode()
+	print("[", _short(_client_id), "] Spawned remote player for client ", _short(client_id))
 
 
 func _setup_client_id_display():
@@ -258,8 +236,7 @@ func _update_client_id_display():
 	if _client_id_label == null:
 		return
 
-	var client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	_client_id_label.text = "Client ID: " + str(client_id)
+	_client_id_label.text = "Client ID: " + str(_client_id)
 
 	if _instance_id_label != null:
 		var instance_text = _game_instance if _game_instance != "" else "-"
@@ -267,12 +244,12 @@ func _update_client_id_display():
 
 	if _is_local_label != null:
 		var is_local_text = "-"
-		if players.has(client_id) and is_instance_valid(players[client_id]):
-			is_local_text = str(players[client_id].is_local_player)
+		if players.has(_client_id) and is_instance_valid(players[_client_id]):
+			is_local_text = str(players[_client_id].is_local_player)
 		_is_local_label.text = "Is Local: " + is_local_text
 
 
-func connection_failed(error: int):
+func on_connection_failed(error: int):
 	match (error):
 		ENUMS.CONNECTION_FAILED.INVALID_PUBLIC_KEY:
 			push_error("The public or private key you entered were invalid.")

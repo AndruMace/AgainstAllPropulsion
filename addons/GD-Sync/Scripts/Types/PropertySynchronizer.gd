@@ -207,6 +207,9 @@ func _update_sync_mode() -> void:
 	if Engine.is_editor_hint() || GDSync == null: return
 	var is_host : bool = GDSync.is_host()
 	var is_owner : bool = GDSync.is_gdsync_owner(self)
+	var owner_id : int = GDSync.get_gdsync_owner(self)
+	var my_id : int = GDSync.get_client_id()
+	print("[PropSync] _update_sync_mode: node=", get_parent().name, " broadcast=", broadcast, " is_owner=", is_owner, " owner_id=", owner_id, " my_id=", my_id)
 	match (broadcast):
 		BROADCAST_MODE.WHEN_HOST:
 			_should_broadcast = is_host
@@ -223,6 +226,7 @@ func _update_sync_mode() -> void:
 			_should_broadcast = true
 		BROADCAST_MODE.NEVER:
 			_should_broadcast = false
+	print("[PropSync] _should_broadcast=", _should_broadcast)
 
 func _process(delta : float) -> void:
 	_check_property_states(delta)
@@ -230,10 +234,15 @@ func _process(delta : float) -> void:
 func _physics_process(delta : float) -> void:
 	_check_property_states(delta)
 
+var _log_timer : float = 0.0
 func _check_property_states(delta : float) -> void:
 	if !GDSync.is_active(): return
+	_log_timer += delta
 	if _should_broadcast:
 		if _may_synchronize(delta):
+			if _log_timer > 2.0:
+				print("[PropSync] Broadcasting for ", get_parent().name, " pos=", node.position)
+				_log_timer = 0.0
 			synchronize(false)
 	else:
 		if interpolated: _interpolate(delta)
@@ -271,6 +280,9 @@ func _client_left(client_id : int) -> void:
 	_update_sync_mode()
 
 func _sync_received(property_name : String, new_value, send_time : float) -> void:
+	# Ignore if we're the broadcaster - don't overwrite our authoritative position
+	if _should_broadcast: return
+	print("[PropSync] _sync_received: ", get_parent().name, " property=", property_name, " value=", new_value)
 	if !_property_lookup.has(property_name): return
 	
 	var property_data : Dictionary = _property_lookup[property_name]

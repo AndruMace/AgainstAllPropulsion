@@ -1,7 +1,6 @@
 [gd_scene load_steps=38 format=3 uid="uid://d3wpsrqfi1gka"]
 
 [ext_resource type="Script" uid="uid://b2ubqluriijkx" path="res://level1.gd" id="1_a7g63"]
-[ext_resource type="PackedScene" uid="uid://b4wvp85wvucum" path="res://Player/player.tscn" id="1_bdnsr"]
 [ext_resource type="Texture2D" uid="uid://gpe3oa6e3kx6" path="res://mats/stomach/bark_bluegum_diff_1k.png" id="1_roxp3"]
 [ext_resource type="Texture2D" uid="uid://cbwjd50614pw4" path="res://mats/stomach/bark_bluegum_ao_1k.png" id="2_wevgq"]
 [ext_resource type="Texture2D" uid="uid://tuqe41pm8q7x" path="res://mats/stomach/bark_bluegum_disp_1k.png" id="3_a7g63"]
@@ -177,8 +176,6 @@ collision_layer = 5
 collision_mask = 5
 size = Vector3(120, 1, 150)
 
-[node name="Player" parent="." instance=ExtResource("1_bdnsr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.28188, 1.54939, 37.9693)
 
 [node name="Platforms" type="Node3D" parent="."]
 
@@ -429,16 +426,16 @@ transform = Transform3D(0.998935, 0, 0.0461475, 0, 1, 0, -0.0461475, 0, 0.998935
 
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -16.9558, 3.14503, 42.4161)
-text = "Controls: 
+text = "Controls:
 WASD,
- Space to Jump, 
-Shift to Sprint, 
+ Space to Jump,
+Shift to Sprint,
 R to reset to last checkpoint"
 font_size = 128
 
 [node name="Label3D2" type="Label3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -16.9558, 4.07037, 32.6156)
-text = "TIPS: 
+text = "TIPS:
 Fire at the ground and jump
 at nearly the same time!
 

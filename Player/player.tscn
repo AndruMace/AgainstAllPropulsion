@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b4wvp85wvucum"]
+[gd_scene load_steps=19 format=3 uid="uid://b4wvp85wvucum"]
 
 [ext_resource type="Script" uid="uid://dgsw05kon0dyl" path="res://Player/Player.gd" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://b3u4fuxgpaax4" path="res://Player/crosshair.gd" id="2_4ntmi"]
@@ -11,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://8jbbbikewydo" path="res://Misc Resources/Sounds/output.mp3" id="9_00tjw"]
 [ext_resource type="PackedScene" uid="uid://7nvfapkr3ad2" path="res://UI/pause_menu.tscn" id="9_x3vf3"]
 [ext_resource type="Script" uid="uid://dns7t0qp3mrba" path="res://Player/timer.gd" id="12_5htga"]
+[ext_resource type="Script" uid="uid://e0kcyfmfvbka" path="res://addons/GD-Sync/Scripts/Types/PropertySynchronizer.gd" id="12_p5o4e"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 
@@ -203,5 +204,18 @@ parameters/looping = true
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.01
 script = ExtResource("12_5htga")
+
+[node name="PropertySynchronizer" type="Node" parent="."]
+script = ExtResource("12_p5o4e")
+broadcast = 2
+refresh_rate = 15
+node_path = NodePath("..")
+reliable = true
+properties = PackedStringArray("position")
+interpolated = true
+interpolation_speed = 1.0
+extrapolated = false
+max_extrapolation_time = 0.2
+metadata/_custom_type_script = "uid://e0kcyfmfvbka"
 
 [connection signal="timeout" from="Timer" to="Timer" method="_on_timeout"]

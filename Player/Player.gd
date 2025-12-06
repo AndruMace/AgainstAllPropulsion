@@ -19,8 +19,11 @@ var speed := 10.0
 
 # Multiplayer
 var client_id: int = -1
+var window_client_id: int = -1
 var is_local_player: bool = false
-var position_synchronizer: PropertySynchronizer = null
+var is_own_window_client: bool = false
+
+@onready var position_synchronizer: PropertySynchronizer = $PropertySynchronizer
 
 var last_checkpoint_pos := Vector3.ZERO
 var aim_animation_speed := 20
@@ -38,6 +41,10 @@ var curr_hp := max_hp:
 		if curr_hp < 1:
 			get_tree().paused = true
 			game_over_menu.game_over()
+
+
+func _ready() -> void:
+	window_client_id = GDSync.get_client_id()
 
 
 func _input(event: InputEvent) -> void:
@@ -76,15 +83,6 @@ func handle_cam_rotation() -> void:
 	mouse_motion = Vector2.ZERO
 
 
-func _ready() -> void:
-	# Wait for client_id to be set before setting up multiplayer
-	if client_id == -1:
-		await get_tree().process_frame
-		setup_multiplayer()
-	else:
-		setup_multiplayer()
-
-
 func setup_multiplayer() -> void:
 	# Check if GDSync is available
 	if not has_node("/root/GDSync"):
@@ -112,14 +110,6 @@ func setup_multiplayer() -> void:
 
 	# Determine if this is the local player
 	is_local_player = (client_id == my_client_id)
-	print(
-		"[Player] Client ID: ",
-		client_id,
-		", My Client ID: ",
-		my_client_id,
-		", Is Local: ",
-		is_local_player,
-	)
 
 	# Only enable input and camera for local player
 	if is_local_player:
@@ -139,61 +129,13 @@ func setup_multiplayer() -> void:
 		if has_node("MarginContainer"):
 			get_node("MarginContainer").visible = false
 
-	# Set up PropertySynchronizer for position synchronization
-	setup_position_synchronizer()
 
-
-func set_client_id(id: int) -> void:
-	if client_id != -1 and client_id == id:
+func set_client_id(new_client_id: int) -> void:
+	if client_id != -1 or client_id == new_client_id:
 		return
 
-	client_id = id
-	# If _ready already ran, set up multiplayer now
-	if is_inside_tree():
-		setup_multiplayer()
-
-
-func setup_position_synchronizer() -> void:
-	# Only set up synchronizer if GDSync is active
-	if not has_node("/root/GDSync"):
-		print("[Player] GDSync not found, skipping position synchronizer")
-		return
-
-	var gdsync = get_node("/root/GDSync")
-	if not gdsync.is_active():
-		print("[Player] GDSync not active, skipping position synchronizer")
-		return
-
-	# Create PropertySynchronizer for position
-	position_synchronizer = PropertySynchronizer.new()
-	position_synchronizer.name = "PositionSynchronizer"
-	position_synchronizer.node_path = NodePath(".")
-	position_synchronizer.properties = PackedStringArray(["position"])
-	position_synchronizer.process = PropertySynchronizer.PROCESS_MODE.PHYSICS_PROCESS
-	position_synchronizer.refresh_rate = 30
-	position_synchronizer.interpolated = true
-	position_synchronizer.interpolation_speed = 30.0
-	position_synchronizer.extrapolated = true
-	position_synchronizer.max_extrapolation_time = 0.2
-	position_synchronizer.broadcast = PropertySynchronizer.BROADCAST_MODE.WHEN_OWNER
-	position_synchronizer.reliable = false
-
-	add_child(position_synchronizer)
-
-	# Set this player as owned by its client
-	# Only the owner will broadcast position updates
-	gdsync.set_gdsync_owner(self, client_id)
-
-	var my_client_id = gdsync.get_client_id() if gdsync.is_active() else -1
-	print(
-		"[Client ID: ",
-		my_client_id,
-		"] Set up position synchronizer for client ",
-		client_id,
-		" (local: ",
-		is_local_player,
-		")",
-	)
+	client_id = new_client_id
+	setup_multiplayer()
 
 
 func _process(delta: float) -> void:
