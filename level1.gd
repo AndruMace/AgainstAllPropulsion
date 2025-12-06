@@ -5,46 +5,43 @@ const LOBBY_PASSWORD = ""
 
 # Player management
 var players: Dictionary = { } # client_id -> Player instance
+var local_players: Dictionary = { } # client_id -> is_local (bool)
 var player_scene = preload("res://Player/player.tscn")
-var default_spawn_position: Vector3 = Vector3.ZERO
+var _default_spawn_position: Vector3 = Vector3.ZERO
 
 var _initial_player: Player = null
 var _game_instance: String = ""
 var _client_id_label: Label = null
 var _instance_id_label: Label = null
+var _is_local_label: Label = null
 
 
 func _ready():
-	var client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", client_id, "] Level 1 ready")
+	# GDSync signals
 	GDSync.connected.connect(connected)
 	GDSync.connection_failed.connect(connection_failed)
-
 	# Lobby signals
 	GDSync.lobby_received.connect(_on_lobby_received)
 	GDSync.lobby_created.connect(_on_lobby_created)
 	GDSync.lobby_creation_failed.connect(_on_lobby_creation_failed)
 	GDSync.lobby_joined.connect(_on_lobby_joined)
 	GDSync.lobby_join_failed.connect(_on_lobby_join_failed)
-
 	# Client join/leave signals
 	GDSync.client_joined.connect(_on_client_joined)
 	GDSync.client_left.connect(_on_client_left)
 
-	var args = OS.get_cmdline_args()
-	client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	print("[Client ID: ", client_id, "] Args: ", args)
-
-	for arg in args:
+	# Arg parsing
+	for arg in OS.get_cmdline_args():
 		if arg.begins_with("--instance="):
 			_game_instance = arg.split("=")[1]
 			break
 
+  # Initial player setup
 	_initial_player = get_node_or_null("Player")
 	if _initial_player:
-		default_spawn_position = _initial_player.position
+		_default_spawn_position = _initial_player.position
 	else:
-		default_spawn_position = Vector3.ZERO
+		_default_spawn_position = Vector3.ZERO
 
 	# Create client ID display
 	_setup_client_id_display()
@@ -107,6 +104,7 @@ func _on_lobby_created(lobby_name: String):
 	if _initial_player and is_instance_valid(_initial_player):
 		players[client_id] = _initial_player
 		_initial_player.set_client_id(client_id)
+		local_players[client_id] = _initial_player.is_local_player
 
 	GDSync.lobby_join(LOBBY_NAME, LOBBY_PASSWORD)
 
@@ -176,6 +174,7 @@ func _on_client_left(client_id: int):
 		if is_instance_valid(player_instance):
 			player_instance.queue_free()
 		players.erase(client_id)
+		local_players.erase(client_id)
 
 
 func _spawn_player_for_client(client_id: int):
@@ -190,11 +189,12 @@ func _spawn_player_for_client(client_id: int):
 	add_child(player_instance)
 	players[client_id] = player_instance
 
-	player_instance.position = default_spawn_position
+	player_instance.position = _default_spawn_position
 	player_instance.set_client_id(client_id)
+	local_players[client_id] = player_instance.is_local_player
 
 	my_client_id = GDSync.get_client_id() if GDSync.is_active() else -1
-	var pos_str = str(default_spawn_position)
+	var pos_str = str(_default_spawn_position)
 	print(
 		"[Client ID: ",
 		my_client_id,
@@ -203,6 +203,8 @@ func _spawn_player_for_client(client_id: int):
 		" at position ",
 		pos_str,
 	)
+
+	_update_client_id_display()
 
 
 func _setup_client_id_display():
@@ -248,6 +250,14 @@ func _setup_client_id_display():
 	_instance_id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	vbox.add_child(_instance_id_label)
 
+	# Create the Is Local Label
+	_is_local_label = Label.new()
+	_is_local_label.name = "IsLocalLabel"
+	_is_local_label.text = "Is Local: -"
+	_is_local_label.add_theme_font_size_override("font_size", 16)
+	_is_local_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	vbox.add_child(_is_local_label)
+
 	# Update the display with initial client ID
 	_update_client_id_display()
 
@@ -262,3 +272,9 @@ func _update_client_id_display():
 	if _instance_id_label != null:
 		var instance_text = _game_instance if _game_instance != "" else "-"
 		_instance_id_label.text = "Instance: " + instance_text
+
+	if _is_local_label != null:
+		var is_local_text = "-"
+		if players.has(client_id) and is_instance_valid(players[client_id]):
+			is_local_text = str(players[client_id].is_local_player)
+		_is_local_label.text = "Is Local: " + is_local_text

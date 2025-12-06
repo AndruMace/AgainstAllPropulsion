@@ -50,7 +50,10 @@ func _input(event: InputEvent) -> void:
 			mouse_motion = -event.relative * PlayerVariables.mouse_sense
 
 	#if Input.is_action_just_pressed("ui_cancel"):
-	#Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
+	# if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	# 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	# else:
+	# 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	if Input.is_action_just_pressed("fly") and OS.is_debug_build():
 		is_flying = !is_flying
@@ -76,7 +79,6 @@ func handle_cam_rotation() -> void:
 func _ready() -> void:
 	# Wait for client_id to be set before setting up multiplayer
 	if client_id == -1:
-		# If client_id not set yet, wait a frame
 		await get_tree().process_frame
 		setup_multiplayer()
 	else:
@@ -86,8 +88,7 @@ func _ready() -> void:
 func setup_multiplayer() -> void:
 	# Check if GDSync is available
 	if not has_node("/root/GDSync"):
-		var client_id = -1
-		print("[Client ID: ", client_id, "] GDSync not found, running in single-player mode")
+		print("GDSync not found, running in single-player mode")
 		is_local_player = true
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		main_camera_3d.current = true
@@ -111,7 +112,14 @@ func setup_multiplayer() -> void:
 
 	# Determine if this is the local player
 	is_local_player = (client_id == my_client_id)
-	print("[Player] Client ID: ", client_id, ", My Client ID: ", my_client_id, ", Is Local: ", is_local_player)
+	print(
+		"[Player] Client ID: ",
+		client_id,
+		", My Client ID: ",
+		my_client_id,
+		", Is Local: ",
+		is_local_player,
+	)
 
 	# Only enable input and camera for local player
 	if is_local_player:
