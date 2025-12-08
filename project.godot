@@ -8,6 +8,12 @@
 
 config_version=5
 
+[GD-Sync]
+
+version="0.13"
+publicKey="21af440a4b2aa37c"
+privateKey="ce4f58b047b3bebb"
+
 [application]
 
 config/name="Insecticide"
@@ -18,6 +24,11 @@ config/icon="res://icon.svg"
 [autoload]
 
 PlayerVariables="*res://autoloads/player_variables.gd"
+GDSync="*res://addons/GD-Sync/MultiplayerClient.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/GD-Sync/plugin.cfg")
 
 [global_group]
 
