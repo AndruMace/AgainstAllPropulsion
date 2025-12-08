@@ -211,10 +211,10 @@ broadcast = 2
 refresh_rate = 15
 node_path = NodePath("..")
 reliable = true
-properties = PackedStringArray("position")
+properties = PackedStringArray("position", "velocity", "basis", "$Camera3D.basis", "$SubViewportContainer/SubViewport/WeaponCam.basis")
 interpolated = true
-interpolation_speed = 1.0
-extrapolated = false
+interpolation_speed = 15.0
+extrapolated = true
 max_extrapolation_time = 0.2
 metadata/_custom_type_script = "uid://e0kcyfmfvbka"
 

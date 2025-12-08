@@ -84,10 +84,10 @@ func handle_cam_rotation() -> void:
 
 
 func setup_multiplayer() -> void:
+	print("[Player] setup_multiplayer() called for ", name, " client_id=", client_id)
 	# Check if GDSync is available
 	if not has_node("/root/GDSync"):
-		print("GDSync not found, running in single-player mode")
-		is_local_player = true
+		print("[Player] GDSync not found, running in single-player mode")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		main_camera_3d.current = true
 		weapon_cam.current = true
@@ -99,7 +99,6 @@ func setup_multiplayer() -> void:
 	# This handles the case where the player is set up before GDSync connects
 	if not gdsync.is_active() or client_id == -1:
 		print("[Player] GDSync not active or client_id not set, defaulting to local player")
-		is_local_player = true
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		main_camera_3d.current = true
 		weapon_cam.current = true
@@ -107,9 +106,11 @@ func setup_multiplayer() -> void:
 		return
 
 	var my_client_id = gdsync.get_client_id()
+	print("[Player] ", name, " client_id=", client_id, " my_client_id=", my_client_id)
 
 	# Determine if this is the local player
 	is_local_player = (client_id == my_client_id)
+	print("[Player] ", name, " is_local_player=", is_local_player)
 
 	# Only enable input and camera for local player
 	if is_local_player:
@@ -123,11 +124,25 @@ func setup_multiplayer() -> void:
 		weapon_cam.current = false
 		# Disable UI elements for remote players
 		if has_node("SubViewportContainer"):
-			get_node("SubViewportContainer").visible = false
+			var svc = get_node("SubViewportContainer")
+			svc.visible = false
+			svc.process_mode = Node.PROCESS_MODE_DISABLED
+			# Move weapon meshes to layer 1 so main camera sees them (not WeaponCam)
+			var weapon_handler = svc.get_node_or_null("SubViewport/WeaponCam/WeaponHandler")
+			if weapon_handler:
+				_set_layers_recursive(weapon_handler, 1)
+			print("[Player] Setup remote player ", name, " weapons on layer 1")
 		if has_node("CenterContainer"):
 			get_node("CenterContainer").visible = false
 		if has_node("MarginContainer"):
 			get_node("MarginContainer").visible = false
+
+
+func _set_layers_recursive(node: Node, layer: int) -> void:
+	if node is VisualInstance3D:
+		node.layers = layer
+	for child in node.get_children():
+		_set_layers_recursive(child, layer)
 
 
 func set_client_id(new_client_id: int) -> void:
@@ -177,9 +192,9 @@ func _physics_process(delta: float) -> void:
 	if not is_local_player:
 		# Remote players still need to apply gravity and move
 		# But they don't process input
-		if not is_flying and not is_on_floor():
-			velocity += get_gravity() * delta * 1.2
-		move_and_slide()
+		# if not is_flying and not is_on_floor():
+		# 	velocity += get_gravity() * delta * 1.2
+		# move_and_slide()
 		return
 
 	handle_cam_rotation()
@@ -210,7 +225,6 @@ func _physics_process(delta: float) -> void:
 			var control_strength := 0.7 # Lower = less control
 			velocity.x = move_toward(velocity.x, direction.x * speed, control_strength)
 			velocity.z = move_toward(velocity.z, direction.z * speed, control_strength)
-
 		elif direction and !is_on_floor():
 			var control_strength := 0.3 # Lower = less control
 			velocity.x = move_toward(velocity.x, direction.x * speed, control_strength)

@@ -18,6 +18,7 @@ var _game_instance: String = ""
 var _client_id_label: Label = null
 var _instance_id_label: Label = null
 var _is_local_label: Label = null
+var _players_label: Label = null
 
 var _client_id: int = -1 # Host-
 
@@ -28,6 +29,15 @@ func _ready():
 		if arg.begins_with("--instance="):
 			_game_instance = arg.split("=")[1]
 			break
+
+	# Set window position based on instance ID (for multi-instance demo)
+	var inst_id := int(_game_instance)
+	if inst_id == 2:
+		# Move 200 down and right
+		DisplayServer.window_set_position(DisplayServer.window_get_position() + Vector2i(800, 400))
+	else:
+		# Move 200 up and left
+		DisplayServer.window_set_position(DisplayServer.window_get_position() - Vector2i(200, 200))
 
 	# Spawn local player immediately so gameplay isn't blocked by network
 	_spawn_local_player()
@@ -129,6 +139,7 @@ func _on_lobby_joined(lobby_name: String):
 		else:
 			print("[", _short(_client_id), "] Spawning remote player for client ", _short(client_id))
 			_spawn_remote_player(client_id)
+	_update_client_id_display()
 
 
 func _on_lobby_join_failed(lobby_name: String, error: int):
@@ -149,6 +160,7 @@ func _on_client_joined(client_id: int):
 	print("[", _short(_client_id), "] Client joined: ", _short(client_id))
 	if _client_id != client_id and not players.has(client_id):
 		_spawn_remote_player(client_id)
+	_update_client_id_display()
 
 
 func _on_client_left(client_id: int):
@@ -159,6 +171,7 @@ func _on_client_left(client_id: int):
 			player_instance.queue_free()
 		players.erase(client_id)
 		local_players.erase(client_id)
+	_update_client_id_display()
 
 
 func _spawn_remote_player(client_id: int):
@@ -174,6 +187,12 @@ func _spawn_remote_player(client_id: int):
 	local_players[client_id] = false
 	GDSync.set_gdsync_owner(player_instance, client_id)
 	player_instance.position_synchronizer._update_sync_mode()
+	# Extra safety: ensure SubViewportContainer is disabled for remote players
+	var svc = player_instance.get_node_or_null("SubViewportContainer")
+	if svc:
+		svc.visible = false
+		svc.process_mode = Node.PROCESS_MODE_DISABLED
+		print("[", _short(_client_id), "] Disabled SubViewportContainer for remote player ", _short(client_id), " visible=", svc.visible)
 	print("[", _short(_client_id), "] Spawned remote player for client ", _short(client_id))
 
 
@@ -228,6 +247,14 @@ func _setup_client_id_display():
 	_is_local_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	vbox.add_child(_is_local_label)
 
+	# Create the Players List Label
+	_players_label = Label.new()
+	_players_label.name = "PlayersLabel"
+	_players_label.text = "Players: -"
+	_players_label.add_theme_font_size_override("font_size", 14)
+	_players_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	vbox.add_child(_players_label)
+
 	# Update the display with initial client ID
 	_update_client_id_display()
 
@@ -247,6 +274,13 @@ func _update_client_id_display():
 		if players.has(_client_id) and is_instance_valid(players[_client_id]):
 			is_local_text = str(players[_client_id].is_local_player)
 		_is_local_label.text = "Is Local: " + is_local_text
+
+	if _players_label != null:
+		var lines: Array[String] = []
+		for cid in players.keys():
+			var status = "local" if local_players.get(cid, false) else "remote"
+			lines.append("%s (%s)" % [_short(cid), status])
+		_players_label.text = "\n".join(lines) if lines.size() > 0 else "-"
 
 
 func on_connection_failed(error: int):
