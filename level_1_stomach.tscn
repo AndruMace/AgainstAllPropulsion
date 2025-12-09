@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://d3wpsrqfi1gka"]
+[gd_scene load_steps=36 format=3 uid="uid://d3wpsrqfi1gka"]
 
 [ext_resource type="Script" uid="uid://b2ubqluriijkx" path="res://level1.gd" id="1_a7g63"]
 [ext_resource type="Texture2D" uid="uid://gpe3oa6e3kx6" path="res://mats/stomach/bark_bluegum_diff_1k.png" id="1_roxp3"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://f2le36ptc4ov" path="res://lg_pickup.tscn" id="6_roxp3"]
 [ext_resource type="PackedScene" uid="uid://d222vdtjgixci" path="res://checkpoint.tscn" id="12_wevgq"]
 [ext_resource type="PackedScene" uid="uid://polwtkkducq" path="res://exit.tscn" id="13_a7g63"]
+[ext_resource type="PackedScene" uid="uid://xgl3c0cn6pcq" path="res://box.tscn" id="13_haj1a"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbghi"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -129,12 +130,6 @@ heightmap_texture = SubResource("CompressedTexture2D_a7g63")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rka8t"]
 metallic = 1.0
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_bi31p"]
-size = Vector3(4, 15, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_haj1a"]
-size = Vector3(4, 15, 1)
-
 [node name="Level1" type="Node3D"]
 script = ExtResource("1_a7g63")
 
@@ -175,7 +170,6 @@ use_collision = true
 collision_layer = 5
 collision_mask = 5
 size = Vector3(120, 1, 150)
-
 
 [node name="Platforms" type="Node3D" parent="."]
 
@@ -452,57 +446,17 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -26.56
 
 [node name="Boxes" type="Node3D" parent="."]
 
-[node name="Box" type="RigidBody3D" parent="Boxes"]
+[node name="Box" parent="Boxes" instance=ExtResource("13_haj1a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.8945, 25.6652, -8.84369)
-collision_layer = 5
-collision_mask = 5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Boxes/Box"]
-shape = SubResource("BoxShape3D_bi31p")
+[node name="Box6" parent="Boxes" instance=ExtResource("13_haj1a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.485, 25.665, -8.844)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Boxes/Box"]
-mesh = SubResource("BoxMesh_haj1a")
+[node name="Box7" parent="Boxes" instance=ExtResource("13_haj1a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.813, 25.665, -8.844)
 
-[node name="Box5" type="RigidBody3D" parent="Boxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.485, 25.6652, -8.84369)
-collision_layer = 5
-collision_mask = 5
+[node name="Box8" parent="Boxes" instance=ExtResource("13_haj1a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.257, 25.665, -8.844)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Boxes/Box5"]
-shape = SubResource("BoxShape3D_bi31p")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Boxes/Box5"]
-mesh = SubResource("BoxMesh_haj1a")
-
-[node name="Box2" type="RigidBody3D" parent="Boxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.8135, 25.6652, -8.84369)
-collision_layer = 5
-collision_mask = 5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Boxes/Box2"]
-shape = SubResource("BoxShape3D_bi31p")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Boxes/Box2"]
-mesh = SubResource("BoxMesh_haj1a")
-
-[node name="Box3" type="RigidBody3D" parent="Boxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.2571, 25.6652, -8.84369)
-collision_layer = 5
-collision_mask = 5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Boxes/Box3"]
-shape = SubResource("BoxShape3D_bi31p")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Boxes/Box3"]
-mesh = SubResource("BoxMesh_haj1a")
-
-[node name="Box4" type="RigidBody3D" parent="Boxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.7151, 25.6652, -8.84369)
-collision_layer = 5
-collision_mask = 5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Boxes/Box4"]
-shape = SubResource("BoxShape3D_bi31p")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Boxes/Box4"]
-mesh = SubResource("BoxMesh_haj1a")
+[node name="Box9" parent="Boxes" instance=ExtResource("13_haj1a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.715, 25.665, -8.844)

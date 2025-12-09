@@ -19,9 +19,8 @@ var _client_id_label: Label = null
 var _instance_id_label: Label = null
 var _is_local_label: Label = null
 var _players_label: Label = null
-
-var _client_id: int = -1 # Host-
-
+var _client_id: int = -1
+var _host_id: int = -1
 
 func _ready():
 	# Arg parsing
@@ -33,10 +32,8 @@ func _ready():
 	# Set window position based on instance ID (for multi-instance demo)
 	var inst_id := int(_game_instance)
 	if inst_id == 2:
-		# Move 200 down and right
 		DisplayServer.window_set_position(DisplayServer.window_get_position() + Vector2i(800, 400))
 	else:
-		# Move 200 up and left
 		DisplayServer.window_set_position(DisplayServer.window_get_position() - Vector2i(200, 200))
 
 	# Spawn local player immediately so gameplay isn't blocked by network
@@ -79,6 +76,7 @@ func on_connected():
 	_local_player.set_client_id(_client_id)
 	players[_client_id] = _local_player
 	local_players[_client_id] = true
+
 	GDSync.set_gdsync_owner(_local_player, _client_id)
 	_local_player.position_synchronizer._update_sync_mode()
 
@@ -104,6 +102,8 @@ func _on_lobby_received(lobby: Dictionary):
 
 func _on_lobby_created(lobby_name: String):
 	print("[", _short(_client_id), "] Successfully created lobby: " + lobby_name)
+	_host_id = GDSync.get_client_id()
+
 	GDSync.lobby_join(LOBBY_NAME, LOBBY_PASSWORD)
 
 
@@ -129,6 +129,7 @@ func _on_lobby_creation_failed(lobby_name: String, error: int):
 
 func _on_lobby_joined(lobby_name: String):
 	print("[", _short(_client_id), "] Successfully joined lobby: " + lobby_name)
+	_host_id = GDSync.get_host()
 
 	# Spawn remote players for all existing clients (our local player is already spawned)
 	for client_id in GDSync.lobby_get_all_clients():

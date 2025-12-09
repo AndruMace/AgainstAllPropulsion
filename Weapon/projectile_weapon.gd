@@ -11,11 +11,12 @@ extends Node3D
 @export var ammo_handler: AmmoHandler
 @export var ammo_type: AmmoHandler.ammo_type
 @export var projectile: PackedScene
-#@export var aim_multi := 0.7 TODO: add weapon dependent zoom multipliers
+
 @onready var timer: Timer = $CoolDownTimer
 @onready var weapon_start_pos := weapon_mesh.position
 @onready var player: Player = $"../../../../.."
 @onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
+@onready var rocket_instantiator: NodeInstantiator = player.get_node("RocketInstantiator")
 
 
 func _ready() -> void:
@@ -34,6 +35,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("fire"):
 			if timer.is_stopped():
 				shoot()
+
 	weapon_mesh.position = lerp(weapon_mesh.position, weapon_start_pos, delta * 10)
 
 
@@ -47,15 +49,12 @@ func shoot() -> void:
 	weapon_mesh.position.z += recoil_amount
 
 	audio_stream_player.play(0.0)
-	var missile := projectile.instantiate()
-	get_tree().current_scene.add_child(missile)
+	var missile := rocket_instantiator.instantiate_node()
+	# Set ownership so PropertySynchronizer syncs from this client
+	var client_id = GDSync.get_client_id()
+	GDSync.set_gdsync_owner(missile, client_id)
+	missile.get_node("PropertySynchronizer")._update_sync_mode()
+	# Set synced properties in same frame - auto-synced via sync_starting_changes
 	missile.global_position = get_parent_node_3d().global_position
 	missile.rotation.y = player.rotation.y
 	missile.rotation_degrees.x = player.main_camera_3d.rotation_degrees.x - 90
-	#if collider:
-	#var spark = sparks.instantiate()
-	#add_child(spark)
-	#spark.global_position = ray_cast_3d.get_collision_point()
-	#
-	#if collider is Enemy:
-	#collider.curr_hp -= damage

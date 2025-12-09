@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://dlg6q71qb75mq"]
+[gd_scene load_steps=15 format=3 uid="uid://dlg6q71qb75mq"]
 
 [ext_resource type="Script" uid="uid://c6hlaterp5x56" path="res://Weapon/missle.gd" id="2_0nl7j"]
+[ext_resource type="Script" uid="uid://e0kcyfmfvbka" path="res://addons/GD-Sync/Scripts/Types/PropertySynchronizer.gd" id="3_sync"]
 [ext_resource type="PackedScene" uid="uid://r55vnw6irow1" path="res://Weapon/missle_mesh.tscn" id="2_m8kvh"]
 [ext_resource type="AudioStream" uid="uid://duajjd42luy02" path="res://Misc Resources/Sounds/explosion.wav" id="3_m8kvh"]
 
@@ -94,6 +95,16 @@ draw_pass_1 = SubResource("SphereMesh_m8kvh")
 stream = ExtResource("3_m8kvh")
 volume_db = -2.0
 bus = &"SFX"
+
+[node name="PropertySynchronizer" type="Node" parent="."]
+script = ExtResource("3_sync")
+broadcast = 5
+refresh_rate = 30
+node_path = NodePath("..")
+properties = PackedStringArray("position")
+interpolated = true
+interpolation_speed = 20.0
+metadata/_custom_type_script = "uid://e0kcyfmfvbka"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
