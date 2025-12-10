@@ -57,12 +57,8 @@ func _on_body_entered(_body: Node3D) -> void:
 			var force = 15.0
 			var impulse = direction * (force / distance)
 
-			if hit_body.has_method("blasted"):
-				var current_velocity = hit_body.get_velocity()
-				var new_velocity = current_velocity + impulse
-				hit_body.blasted()
-				hit_body.set_velocity(new_velocity)
-				hit_body.move_and_slide()
+			if hit_body.has_method("apply_explosion_impulse"):
+				GDSync.call_func_on(hit_body.client_id, hit_body.apply_explosion_impulse, [impulse])
 
 	_do_explosion_effects()
 	GDSync.call_func(_destroy_remote)

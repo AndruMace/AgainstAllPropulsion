@@ -45,6 +45,7 @@ var curr_hp := max_hp:
 
 func _ready() -> void:
 	window_client_id = GDSync.get_client_id()
+	GDSync.expose_func(apply_explosion_impulse)
 
 
 func _input(event: InputEvent) -> void:
@@ -243,3 +244,11 @@ func blasted() -> void:
 		change_velocity = true
 	else:
 		blasted()
+
+
+func apply_explosion_impulse(impulse: Vector3) -> void:
+	if not is_local_player:
+		return
+	blasted()
+	velocity += impulse
+	move_and_slide()
